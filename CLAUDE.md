@@ -52,7 +52,12 @@ Specs that are likely relevant:
 ### 3. Git workflow — one topic per branch, one topic per commit
 
 - Never commit straight to `main`. Work on a topic branch, then merge through a
-  pull request.
+  pull request. `main` is protected by the ruleset `protect-main`: PR only,
+  1 approval from a code owner (`.github/CODEOWNERS`), no force-push or
+  deletion; only the repo admin may bypass, and only via a PR. Anyone may
+  review. Details: `docs/development/reviews.md`.
+- PRs always target `main` directly. Don't stack PRs on other topic branches.
+- Never change branch protection, rulesets or CODEOWNERS without an issue.
 - Branch names: `<type>/<issue-number>-<short-slug>`, e.g.
   `feat/12-capture-current-mode`, `fix/17-resume-reapply`, `docs/2-dev-docs`.
 - Each commit covers one topic. Don't mix unrelated changes.
