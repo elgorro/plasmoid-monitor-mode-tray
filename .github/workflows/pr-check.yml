@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: 2026 elgorro
+# SPDX-License-Identifier: MIT
+#
+# PR check: compile and run the unit tests. No artifacts are uploaded.
+# Runs in environment E1 (docs/development/test-environments.md).
+
+name: PR check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build and test (Arch Linux)
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    timeout-minutes: 30
+    steps:
+      # Only what the build needs today; extend together with CMakeLists.txt
+      # (full list: docs/development/prerequisites.md).
+      - name: Install build dependencies
+        run: pacman -Syu --noconfirm --needed cmake ninja extra-cmake-modules qt6-base
+
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Configure
+        run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure

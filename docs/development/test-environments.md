@@ -2,7 +2,7 @@
 title: "Test environments"
 weight: 3
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T00:00:00+01:00
+lastmod: 2026-11-13T12:00:00+01:00
 ---
 
 pmmt touches real hardware and a running Plasma session. Most testing must work
@@ -35,6 +35,30 @@ ctest --test-dir build --output-on-failure
 
 No `/dev/i2c-*`, no D-Bus, no display. Tests that need any of these must not
 run here.
+
+### Continuous integration
+
+`.github/workflows/pr-check.yml` runs E1 on every pull request against `main`
+and on every push to `main`:
+
+1. install the build dependencies with `pacman` (only what `CMakeLists.txt`
+   needs so far);
+2. configure (`-G Ninja -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON`), build;
+3. `ctest --output-on-failure`.
+
+It only compiles and tests. It uploads no artifacts and has read-only
+`contents` permission. Actions are pinned to a commit SHA. When a new
+dependency goes into `CMakeLists.txt`, add its package to the workflow in the
+same commit.
+
+Reproduce a CI run locally:
+
+```sh
+docker run --rm -v "$PWD":/src:ro archlinux:base-devel bash -c '
+  pacman -Syu --noconfirm --needed cmake ninja extra-cmake-modules qt6-base &&
+  cmake -S /src -B /tmp/build -G Ninja -DBUILD_TESTING=ON &&
+  cmake --build /tmp/build && ctest --test-dir /tmp/build --output-on-failure'
+```
 
 ## E2: container with a private D-Bus
 
