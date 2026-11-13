@@ -1,0 +1,22 @@
+# Local Claude Code context (machine-specific, never commit)
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Hugo build output
+public/
+resources/_gen/
+.hugo_build.lock
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Build dirs
+build/
+
+# Editors / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
