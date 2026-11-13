@@ -100,7 +100,7 @@ Specs that are likely relevant:
 | Plasmoid ID (`KPlugin.Id`, package dir) | `io.github.elgorro.monitormodetray` |
 | D-Bus service | `io.github.elgorro.monitormodetray` |
 | D-Bus object path | `/io/github/elgorro/monitormodetray` |
-| D-Bus interface | `io.github.elgorro.monitormodetray.Modes` |
+| D-Bus interface | `io.github.elgorro.monitormodetray.Modes1` (major version in the name) |
 | `.desktop` / metainfo | `io.github.elgorro.monitormodetray.desktop` / `.metainfo.xml` |
 | Config file | `$XDG_CONFIG_HOME/pmmt/modes.toml` |
 | State file | `$XDG_STATE_HOME/pmmt/state.toml` |
