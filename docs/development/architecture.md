@@ -152,13 +152,30 @@ Runtime state (active mode per display) lives in
 1. Look up the mode and the display; fail early if either is missing.
 2. Read the current values the backend knows (cached since the last apply/read).
 3. **Diff:** keep only values that differ.
-4. **Brightness (`0x10`):** if present, set it through `BrightnessSync`, not
-   over DDC directly (see below).
-5. **Other codes:** write them one by one through `DisplayBackend`, in MCCS order
-   (colour preset before gains, because a preset can reset gains).
+4. **Write the other codes** one by one through `DisplayBackend`, in this
+   order:
+   1. colour preset (`0x14`) and vendor picture modes (e.g. `0xDC`);
+   2. RGB gains (`0x16`, `0x18`, `0x1A`);
+   3. contrast (`0x12`) and any remaining codes, ascending.
+5. **Brightness (`0x10`) last:** if present, set it through `BrightnessSync`,
+   not over DDC directly (see below).
 6. Optionally read back and verify (config switch, off by default because it
    doubles the bus traffic).
 7. Store the active mode in state, emit `ModeApplied`.
+
+### Write order
+
+VESA MCCS defines the codes but no write order, and monitors react differently
+to a preset change. Selecting a colour preset or picture mode can reset other
+values on the monitor side:
+
+- a colour preset (`0x14`) can reset the RGB gains, so gains come after it;
+- on the Acer SA243Y, enabling the blue-light picture mode changed brightness
+  by itself (100 → 75, see README).
+
+So everything that selects a preset or mode goes first, fine-tuning values
+follow, and brightness is written last. That way the value from the mode is
+the one that sticks, and the value KDE remembers matches the monitor.
 
 A failed write stops the apply and returns an error that names the VCP code.
 Values already written stay written; the error says so.
