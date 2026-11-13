@@ -2,7 +2,7 @@
 title: "Test environments"
 weight: 3
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T12:00:00+01:00
+lastmod: 2026-11-13T21:00:00+01:00
 ---
 
 pmmt touches real hardware and a running Plasma session. Most testing must work
@@ -90,7 +90,7 @@ Your normal Plasma session, but pmmt points at fake hardware and a private bus,
 so the real monitor and real config are untouched:
 
 ```sh
-export PMMT_BACKEND=fake PMMT_FAKE_FIXTURE=tests/fixtures/acer-sa243y.toml
+export PMMT_BACKEND=fake PMMT_FAKE_FIXTURE=tests/fixtures/monitors/acer-sa243y.toml
 export PMMT_CONFIG_DIR=$(mktemp -d) PMMT_STATE_DIR=$(mktemp -d)
 dbus-run-session -- bash -c 'build/bin/pmmtd & sleep 1; plasmoidviewer -a package'
 ```

@@ -1,0 +1,116 @@
+# Fake monitor definition: Acer SA243Y G0 (MCCS 2.2, RealTek controller).
+#
+# Recorded on real hardware for issue #12 with ddcutil 3.0.2, see
+# docs/development/acer-sa243y.md. The format is provisional; FakeBackend
+# (#14) defines the final schema.
+#
+# Values are the state after the investigation (OSD "Picture mode" Normal,
+# LBL Standard). The serial is a placeholder, not the real one.
+
+version = 1
+
+[display]
+manufacturer = "ACR"
+model = "SA243Y G0"
+product_code = 0x0E1C
+serial = "FAKE0001"
+mccs_version = "2.2"
+connector = "DP-8"
+
+# Continuous features: current value and maximum (VESA MCCS 2.2a).
+# Non-continuous features: current value and the values the capabilities
+# string allows. `writable = false` marks codes that must not be written.
+
+[vcp.0x10] # Luminance (brightness)
+value = 75
+max = 100
+
+[vcp.0x12] # Contrast
+value = 50
+max = 100
+
+[vcp.0x14] # Select Color Preset; OSD names differ from MCCS names
+value = 0x06
+allowed = [0x05, 0x06, 0x08, 0x0B]
+names = { 0x05 = "Warm", 0x06 = "Normal", 0x08 = "Cool", 0x0B = "User" }
+
+[vcp.0x16] # Video Gain: Red
+value = 50
+max = 100
+
+[vcp.0x18] # Video Gain: Green
+value = 50
+max = 100
+
+[vcp.0x1A] # Video Gain: Blue
+value = 50
+max = 100
+
+[vcp.0x60] # Input Source
+value = 0x11
+allowed = [0x01, 0x11]
+writable = false
+
+[vcp.0x87] # Sharpness
+value = 2
+max = 4
+
+[vcp.0xD6] # Power mode
+value = 0x01
+allowed = [0x01, 0x02, 0x04, 0x05]
+writable = false
+
+[vcp.0xE2] # vendor: undocumented preset, sets brightness/contrast; avoid
+value = 0x00
+allowed = [0x00, 0x01, 0x02, 0x03, 0x04]
+
+[vcp.0xE8] # vendor: Low Blue Light level, 0 = Standard (off), 1..4 = level
+value = 0x00
+allowed = [0x00, 0x01, 0x02, 0x03, 0x04]
+
+# Side effects observed on the real monitor. FakeBackend should reproduce
+# them so ModeApplier tests catch wrong write orders.
+
+# Writing E8 = n selects OSD Picture mode "LBL" and sets brightness itself.
+[[effects]]
+on_write = 0xE8
+value = 1
+sets = { 0x10 = 80 }
+
+[[effects]]
+on_write = 0xE8
+value = 2
+sets = { 0x10 = 75 }
+
+[[effects]]
+on_write = 0xE8
+value = 3
+sets = { 0x10 = 65 }
+
+[[effects]]
+on_write = 0xE8
+value = 4
+sets = { 0x10 = 60 }
+
+[[effects]]
+on_write = 0xE8
+value = 0
+sets = { 0x10 = 80, 0x14 = 0x05 }
+
+# Any brightness write, even of the current value, resets LBL to Standard.
+[[effects]]
+on_write = 0x10
+sets = { 0xE8 = 0x00 }
+
+# Writing an RGB gain switches the colour preset to User.
+[[effects]]
+on_write = 0x16
+sets = { 0x14 = 0x0B }
+
+[[effects]]
+on_write = 0x18
+sets = { 0x14 = 0x0B }
+
+[[effects]]
+on_write = 0x1A
+sets = { 0x14 = 0x0B }

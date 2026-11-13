@@ -2,7 +2,7 @@
 title: "Smoke tests"
 weight: 5
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T00:00:00+01:00
+lastmod: 2026-11-13T21:00:00+01:00
 ---
 
 Smoke tests check that the built and installed pieces start and talk to each
@@ -39,7 +39,7 @@ Pass: every command exits 0.
 ## S2: daemon and API with the fake backend
 
 Runs under `dbus-run-session` with `PMMT_BACKEND=fake` and the
-`acer-sa243y.toml` fixture (see [Test environments](../test-environments/#e2-container-with-a-private-d-bus)).
+`tests/fixtures/monitors/acer-sa243y.toml` fixture (see [Test environments](../test-environments/#e2-container-with-a-private-d-bus)).
 
 | # | Step | Pass when |
 |---|---|---|

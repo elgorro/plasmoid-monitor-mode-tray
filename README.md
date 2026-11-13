@@ -9,7 +9,9 @@ The Acer SA243Y's own blue light mode got reset whenever KDE sent its saved
 brightness (100%) over DDC/CI. The mode itself can't be read over DDC/CI. Only
 brightness (VCP 0x10) changed when the mode was turned on (100 → 75). Matching
 KDE's saved brightness (`kscreen-doctor output.DP-8.brightness.75`) fixed the
-reset.
+reset. Later tests showed that the mode can be *set* over DDC/CI (vendor code
+0xE8) and that any brightness write turns it off again; see
+[docs/development/acer-sa243y.md](docs/development/acer-sa243y.md).
 
 A tray switcher would make this explicit. Each mode is a set of DDC/CI values,
 and the tray applies a mode while keeping KDE's brightness in sync, so the two
