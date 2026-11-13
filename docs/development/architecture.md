@@ -2,7 +2,7 @@
 title: "Architecture and API"
 weight: 2
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T21:00:00+01:00
+lastmod: 2026-11-13T20:15:00+01:00
 ---
 
 > **Status:** proposed. Changes to this page go through an issue labelled
@@ -150,7 +150,7 @@ brightness = 75              # must match what LBL level 2 sets itself
 ```
 
 `after_brightness` lists codes that the monitor resets whenever brightness
-is written; see [Write order](#write-order). Which codes need it is
+(or, on some monitors, another code such as contrast) is written; see [Write order](#write-order). Which codes need it is
 monitor-specific. For the Acer SA243Y see
 [Acer SA243Y over DDC/CI](../acer-sa243y/).
 
@@ -174,7 +174,8 @@ Runtime state (active mode per display) lives in
    not over DDC directly (see below).
 6. **`after_brightness` codes** of the mode, ascending. They are written even
    when the diff says they are unchanged, because the brightness write in
-   step 5 may have reset them on the monitor side. Then read `0x10` once: if
+   step 5 or a contrast write in step 4 may have reset them on the monitor
+   side. Then read `0x10` once: if
    it differs from the mode's brightness, report it (the mode's brightness
    doesn't match what the monitor sets for that code). Don't write `0x10`
    again, that would undo step 6.
@@ -191,16 +192,16 @@ values on the monitor side:
 - a colour preset (`0x14`) can reset the RGB gains, so gains come after it;
   on the Acer SA243Y, writing a gain switches `0x14` to User by itself;
 - on the Acer SA243Y, each Low Blue Light level (`0xE8`) sets its own
-  brightness (level 2 → 75), and **any** `0x10` write, even of the same value,
-  switches LBL back off.
+  brightness (level 2 → 75), and **any** `0x10` or `0x12` (contrast) write,
+  even of the same value, switches LBL back off.
 
 So everything that selects a preset or mode goes first, fine-tuning values
 follow, and brightness is written last. That way the value from the mode is
 the one that sticks, and the value KDE remembers matches the monitor.
 
 The exception is a mode code that brightness writes clear, like the Acer's
-`0xE8`. It has to come after brightness, and nothing may write `0x10` after
-it. The display lists such codes in `after_brightness`. For this to stay
+`0xE8`. It has to come after brightness (and after contrast, which clears it
+too on the Acer), and nothing may write `0x10` or `0x12` after it. The display lists such codes in `after_brightness`. For this to stay
 stable, the mode's brightness must equal what the monitor sets for that code,
 so that KDE's stored brightness already matches and PowerDevil has no reason
 to write `0x10` later. Details: [Acer SA243Y over DDC/CI](../acer-sa243y/).
