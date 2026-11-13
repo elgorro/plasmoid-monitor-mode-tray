@@ -2,15 +2,16 @@
 title: "Development"
 weight: 10
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T21:00:00+01:00
+lastmod: 2026-11-13T20:16:44+01:00
 ---
 
 Documentation for people working on pmmt itself.
 
 > **Status:** design phase (milestone v0.1.0). These pages describe the planned
-> architecture and test strategy. So far only the build skeleton exists
-> (`CMakeLists.txt`, a placeholder `libpmmt-core`, one unit test). Where code
-> and docs disagree, fix whichever is wrong in the same commit.
+> architecture and test strategy. So far `libpmmt-core` has the config model
+> (`Mode`, `ModeStore`, see [Configuration](../usage/configuration/)); the
+> rest is milestone v0.2.0. Where code and docs disagree, fix whichever is
+> wrong in the same commit.
 
 1. [Prerequisites](prerequisites/): tools, libraries and DDC/CI access
 2. [Architecture and API](architecture/): modules and the D-Bus API

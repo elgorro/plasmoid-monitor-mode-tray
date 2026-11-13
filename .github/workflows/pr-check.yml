@@ -29,7 +29,7 @@ jobs:
       # Only what the build needs today; extend together with CMakeLists.txt
       # (full list: docs/development/prerequisites.md).
       - name: Install build dependencies
-        run: pacman -Syu --noconfirm --needed cmake ninja extra-cmake-modules qt6-base
+        run: pacman -Syu --noconfirm --needed cmake ninja extra-cmake-modules qt6-base tomlplusplus
 
       - name: Check out
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
