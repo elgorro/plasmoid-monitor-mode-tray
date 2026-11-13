@@ -15,25 +15,25 @@ A tray switcher would make this explicit. Each mode is a set of DDC/CI values,
 and the tray applies a mode while keeping KDE's brightness in sync, so the two
 don't fight.
 
-## Rough plan
+## Plan
 
-- Modes defined in a config file (e.g. `~/.config/monitor-mode-tray/modes.toml`),
-  each with VCP values: brightness (0x10), contrast (0x12), colour preset (0x14),
-  RGB gains (0x16/0x18/0x1A).
-- Applying a mode:
-  - send the VCP values with `ddcutil setvcp` (or libddcutil);
-  - set KDE's brightness to the same value with
-    `kscreen-doctor output.<name>.brightness.<n>` or the KWin D-Bus API.
-- "Capture current" action: read the monitor's current values
-  (`ddcutil getvcp scan -t`) and save them as a new mode.
-- Re-apply the active mode after resume and hotplug.
-- Tray UI: a Plasma 6 plasmoid (QML), or a small Python + KStatusNotifierItem
-  app as a quicker prototype.
-- Optional: switch modes on a schedule (e.g. evening mode at sunset), as an
-  alternative to Night Light.
+- Modes are defined in `$XDG_CONFIG_HOME/pmmt/modes.toml`. Each mode holds VCP
+  values: brightness (0x10), contrast (0x12), colour preset (0x14), RGB gains
+  (0x16/0x18/0x1A) or raw codes.
+- A small session daemon (`pmmtd`) applies modes over DDC/CI (libddcutil) and
+  sets brightness through KDE's PowerDevil, so KDE remembers the same value.
+- A Plasma 6 plasmoid (QML) and a CLI (`pmmt`) talk to the daemon over D-Bus.
+- "Capture current" saves the monitor's current values as a new mode.
+- The active mode is re-applied after resume and hotplug.
+- Optional: switch modes on a schedule (e.g. evening mode at sunset).
+
+Stack: C++20, Qt 6, KDE Frameworks 6, CMake + ECM. Details:
+[architecture and API](docs/development/architecture.md); planning happens in
+GitHub issues and milestones.
 
 ## Notes
 
-- Install `ddcutil`; your user needs to be in the `i2c` group (or have ACL access
-  to `/dev/i2c-*`).
+- Install `ddcutil`. Its udev rule (`60-ddcutil-i2c.rules`, `TAG+="uaccess"`)
+  gives the active local session access to `/dev/i2c-*`; no `i2c` group or
+  sudo needed. This does not apply over SSH or outside the seat.
 - Writes over DDC/CI are slow (~50–100 ms each), so only send values that changed.
