@@ -2,7 +2,7 @@
 title: "Development"
 weight: 10
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T12:00:00+01:00
+lastmod: 2026-11-13T21:00:00+01:00
 ---
 
 Documentation for people working on pmmt itself.
@@ -18,6 +18,7 @@ Documentation for people working on pmmt itself.
 4. [Unit tests](unit-tests/): fast tests without hardware
 5. [Smoke tests](smoke-tests/): checks that the built pieces work together
 6. [Reviews and merging](reviews/): branch protection and who approves
+7. [Acer SA243Y over DDC/CI](acer-sa243y/): what the reference monitor accepts
 
 Project rules (specs first, docs with every commit, branches, issues and
 milestones) are in `CLAUDE.md` and `CONTRIBUTING.md` at the repository root.

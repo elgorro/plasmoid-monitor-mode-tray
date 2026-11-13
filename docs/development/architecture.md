@@ -2,7 +2,7 @@
 title: "Architecture and API"
 weight: 2
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T14:30:00+01:00
+lastmod: 2026-11-13T21:00:00+01:00
 ---
 
 > **Status:** proposed. Changes to this page go through an issue labelled
@@ -126,6 +126,7 @@ version = 1
 [displays.acer]
 id = "ACR:SA243Y:1234ABCD"   # from `pmmt displays`
 connector = "DP-8"           # optional hint
+after_brightness = ["0xE8"]  # codes the monitor clears when 0x10 is written
 
 [modes.day]
 display = "acer"
@@ -134,14 +135,24 @@ contrast = 50
 
 [modes.evening]
 display = "acer"
-brightness = 75
-red_gain = 100
-green_gain = 85
-blue_gain = 60
+brightness = 60
+color_preset = 0x0B          # User; gains only make sense here
+red_gain = 47
+green_gain = 50
+blue_gain = 36
 
-[modes.evening.vcp]
-"0xDC" = 3                   # raw VCP code, e.g. a vendor display mode
+[modes.lowblue]
+display = "acer"
+brightness = 75              # must match what LBL level 2 sets itself
+
+[modes.lowblue.vcp]
+"0xE8" = 2                   # raw VCP code: Acer Low Blue Light, level 2
 ```
+
+`after_brightness` lists codes that the monitor resets whenever brightness
+is written; see [Write order](#write-order). Which codes need it is
+monitor-specific. For the Acer SA243Y see
+[Acer SA243Y over DDC/CI](../acer-sa243y/).
 
 Unknown keys are an error, not a warning, so typos don't silently do nothing.
 Runtime state (active mode per display) lives in
@@ -157,11 +168,19 @@ Runtime state (active mode per display) lives in
    1. colour preset (`0x14`) and vendor picture modes (e.g. `0xDC`);
    2. RGB gains (`0x16`, `0x18`, `0x1A`);
    3. contrast (`0x12`) and any remaining codes, ascending.
-5. **Brightness (`0x10`) last:** if present, set it through `BrightnessSync`,
+
+   Codes listed in the display's `after_brightness` are skipped here.
+5. **Brightness (`0x10`):** if present, set it through `BrightnessSync`,
    not over DDC directly (see below).
-6. Optionally read back and verify (config switch, off by default because it
+6. **`after_brightness` codes** of the mode, ascending. They are written even
+   when the diff says they are unchanged, because the brightness write in
+   step 5 may have reset them on the monitor side. Then read `0x10` once: if
+   it differs from the mode's brightness, report it (the mode's brightness
+   doesn't match what the monitor sets for that code). Don't write `0x10`
+   again, that would undo step 6.
+7. Optionally read back and verify (config switch, off by default because it
    doubles the bus traffic).
-7. Store the active mode in state, emit `ModeApplied`.
+8. Store the active mode in state, emit `ModeApplied`.
 
 ### Write order
 
@@ -170,12 +189,21 @@ to a preset change. Selecting a colour preset or picture mode can reset other
 values on the monitor side:
 
 - a colour preset (`0x14`) can reset the RGB gains, so gains come after it;
-- on the Acer SA243Y, enabling the blue-light picture mode changed brightness
-  by itself (100 → 75, see README).
+  on the Acer SA243Y, writing a gain switches `0x14` to User by itself;
+- on the Acer SA243Y, each Low Blue Light level (`0xE8`) sets its own
+  brightness (level 2 → 75), and **any** `0x10` write, even of the same value,
+  switches LBL back off.
 
 So everything that selects a preset or mode goes first, fine-tuning values
 follow, and brightness is written last. That way the value from the mode is
 the one that sticks, and the value KDE remembers matches the monitor.
+
+The exception is a mode code that brightness writes clear, like the Acer's
+`0xE8`. It has to come after brightness, and nothing may write `0x10` after
+it. The display lists such codes in `after_brightness`. For this to stay
+stable, the mode's brightness must equal what the monitor sets for that code,
+so that KDE's stored brightness already matches and PowerDevil has no reason
+to write `0x10` later. Details: [Acer SA243Y over DDC/CI](../acer-sa243y/).
 
 A failed write stops the apply and returns an error that names the VCP code.
 Values already written stay written; the error says so.
@@ -279,6 +307,7 @@ pmmt reload                → ReloadConfig
 - **Hotplug:** `DisplayAdded` from `org.kde.ScreenBrightness` triggers the same
   re-apply for that display.
 - Re-apply only writes differing values, so it is cheap when nothing changed.
+  `after_brightness` codes are the exception (see [Applying a mode](#applying-a-mode)).
 
 ## Open questions
 
