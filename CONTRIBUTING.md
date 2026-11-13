@@ -30,6 +30,14 @@ Contributions are welcome — bug reports, ideas, docs and code.
 6. Open a **pull request** against `main` that links the issue (`Closes #12`)
    and carries the same labels and milestone.
 
+## Reviews
+
+`main` is protected: changes only land through pull requests. **Everyone is
+welcome to review** — comments, suggestions and testing on real hardware all
+help. A merge needs one approval from a code owner (see
+[`.github/CODEOWNERS`](.github/CODEOWNERS)), and all review conversations must
+be resolved. Details: [docs/development/reviews.md](docs/development/reviews.md).
+
 ## Code of conduct
 
 Be respectful and constructive. This project follows the

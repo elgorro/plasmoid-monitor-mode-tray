@@ -16,6 +16,7 @@ Documentation for people working on pmmt itself.
 3. [Test environments](test-environments/): where tests run
 4. [Unit tests](unit-tests/): fast tests without hardware
 5. [Smoke tests](smoke-tests/): checks that the built pieces work together
+6. [Reviews and merging](reviews/): branch protection and who approves
 
 Project rules (specs first, docs with every commit, branches, issues and
 milestones) are in `CLAUDE.md` and `CONTRIBUTING.md` at the repository root.
