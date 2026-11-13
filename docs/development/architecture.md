@@ -2,7 +2,7 @@
 title: "Architecture and API"
 weight: 2
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T14:00:00+01:00
+lastmod: 2026-11-13T14:30:00+01:00
 ---
 
 > **Status:** proposed. Changes to this page go through an issue labelled
@@ -76,7 +76,7 @@ Every arrow points down. Lower modules never know about higher ones.
 ### Language and build
 
 C++20, Qt 6, KDE Frameworks 6, CMake + ECM: the KDE standard toolchain, and
-`libddcutil` is a C library. The plasmoid UI is QML. The README's Python
+`libddcutil` is a C library. The plasmoid UI is QML. An early Python
 prototype idea is dropped in favour of a single stack.
 
 ### Planned repository layout

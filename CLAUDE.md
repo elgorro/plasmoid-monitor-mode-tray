@@ -76,9 +76,11 @@ Specs that are likely relevant:
     `type: refactor`, `type: test`
   - Priority: `prio: high`, `prio: medium`, `prio: low`
   - Area (optional): `area: plasmoid`, `area: daemon`, `area: core`,
-    `area: ddc`, `area: kde-integration`, `area: config`, `area: packaging`
-  - Status (optional): `status: blocked`, `status: needs-info`
-  - Community: `good first issue`, `help wanted`
+    `area: ddc`, `area: kde-integration`, `area: config`, `area: packaging`,
+    `area: cli`
+  - Status (optional): `status: blocked`, `status: needs-info`,
+    `status: needs-decision`
+  - Community: `good first issue`, `help wanted`, `accessibility`
 - Milestones track releases (`v0.1.0`, `v0.2.0`, …) per SemVer. Keep them up to
   date: assign issues and PRs, close milestones when released.
 - PRs link their issue (`Closes #n`) and carry the same labels and milestone.
