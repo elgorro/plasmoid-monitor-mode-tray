@@ -1,0 +1,8 @@
+version = 1
+
+[displays.acer]
+id = "ACR:SA243Y:1234ABCD"
+
+[modes.day]
+display = "acer"
+brightnes = 100

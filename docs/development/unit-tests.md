@@ -2,7 +2,7 @@
 title: "Unit tests"
 weight: 4
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T12:00:00+01:00
+lastmod: 2026-11-13T20:16:44+01:00
 ---
 
 Unit tests check one module at a time, with the hardware and KDE replaced by
@@ -38,7 +38,9 @@ tests/fixtures/config/*.toml     config inputs (valid and invalid)
 tests/fixtures/monitors/*.toml   fake monitor definitions
 ```
 
-`tests/unit/test_version.cpp` is the smallest working example.
+`tests/unit/test_version.cpp` is the smallest working example. Tests that read
+fixtures get the path from the `PMMT_FIXTURES_DIR` compile definition, see
+`test_modestore` in `tests/unit/CMakeLists.txt`.
 
 ECM's `KDECMakeSettings` also registers an `appstreamtest` in CTest. It passes
 trivially until the AppStream metainfo file exists.

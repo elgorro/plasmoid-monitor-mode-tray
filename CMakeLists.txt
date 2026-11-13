@@ -27,6 +27,14 @@ ecm_setup_version(PROJECT
     VERSION_HEADER ${CMAKE_CURRENT_BINARY_DIR}/src/core/pmmt_version.h)
 
 find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS Core)
+
+# TOML v1.0.0 parser for modes.toml (MIT).
+find_package(tomlplusplus 3.4 REQUIRED)
+set_package_properties(tomlplusplus PROPERTIES
+    DESCRIPTION "TOML v1.0.0 parser"
+    URL "https://marzer.github.io/tomlplusplus/"
+    TYPE REQUIRED
+    PURPOSE "Reads the mode configuration (modes.toml)")
 if(BUILD_TESTING)
     find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS Test)
 endif()

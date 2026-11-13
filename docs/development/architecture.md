@@ -2,7 +2,7 @@
 title: "Architecture and API"
 weight: 2
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T20:15:00+01:00
+lastmod: 2026-11-13T20:16:44+01:00
 ---
 
 > **Status:** proposed. Changes to this page go through an issue labelled
@@ -155,6 +155,9 @@ monitor-specific. For the Acer SA243Y see
 [Acer SA243Y over DDC/CI](../acer-sa243y/).
 
 Unknown keys are an error, not a warning, so typos don't silently do nothing.
+The full format and every validation rule are in
+[Configuration](../../usage/configuration/); `ModeStore` in `src/core/`
+implements it.
 Runtime state (active mode per display) lives in
 `$XDG_STATE_HOME/pmmt/state.toml`.
 
