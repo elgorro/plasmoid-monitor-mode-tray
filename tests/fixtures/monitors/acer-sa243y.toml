@@ -1,8 +1,8 @@
 # Fake monitor definition: Acer SA243Y G0 (MCCS 2.2, RealTek controller).
 #
 # Recorded on real hardware for issues #12 and #38 with ddcutil 3.0.2, see
-# docs/development/acer-sa243y.md. The format is provisional; FakeBackend
-# (#14) defines the final schema.
+# docs/development/acer-sa243y.md. Format: docs/development/unit-tests.md,
+# "Monitor fixtures"; read by FakeBackend::loadFixture().
 #
 # Values are the state after the investigation (OSD "Picture mode" Normal,
 # LBL Standard). The serial is a placeholder, not the real one.

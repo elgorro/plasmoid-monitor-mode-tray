@@ -1,0 +1,34 @@
+# Valid modes.toml: the example from docs/usage/configuration.md.
+# Modes are deliberately not in alphabetical order, to check that file order
+# is kept.
+
+version = 1
+
+[displays.acer]
+id = "ACR:SA243Y:1234ABCD"   # from `pmmt displays`
+connector = "DP-8"           # optional hint
+after_brightness = ["0xE8"]  # codes the monitor clears when 0x10 is written
+
+[modes.day]
+display = "acer"
+brightness = 100
+contrast = 50
+
+[modes.evening]
+display = "acer"
+brightness = 60
+color_preset = 0x0B          # User; gains only make sense here
+red_gain = 47
+green_gain = 50
+blue_gain = 36
+
+[modes.lowblue]
+display = "acer"
+brightness = 75              # must match what LBL level 2 sets itself
+
+[modes.lowblue.vcp]
+"0xE8" = 2                   # raw VCP code: Acer Low Blue Light, level 2
+
+[modes.cinema]
+display = "acer"
+brightness = 40

@@ -2,7 +2,7 @@
 title: "Prerequisites"
 weight: 1
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T12:00:00+01:00
+lastmod: 2026-11-13T20:16:44+01:00
 ---
 
 ## Target platform
@@ -39,7 +39,7 @@ sudo pacman -S --needed base-devel cmake ninja extra-cmake-modules \
 | `ki18n`, `kcoreaddons` | translations, `KAboutData` |
 | `libplasma` | Plasma applet QML modules |
 | `ddcutil` | `libddcutil` and the `ddcutil` CLI (debugging, smoke tests) |
-| `tomlplusplus` | TOML v1.0.0 parser (MIT, header-only) |
+| `tomlplusplus` | TOML v1.0.0 parser (MIT); `libpmmt-core` links Arch's shared build |
 | `plasma-sdk` | `plasmoidviewer` for running the applet outside the panel |
 | `clang` | `clang-format`, `clang-tidy` |
 | `appstream`, `desktop-file-utils` | `appstreamcli validate`, `desktop-file-validate` |
