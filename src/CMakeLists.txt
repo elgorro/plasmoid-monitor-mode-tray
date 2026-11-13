@@ -3,3 +3,4 @@
 
 # Layout: docs/development/architecture.md, "Planned repository layout".
 add_subdirectory(core)
+add_subdirectory(backends/fake)

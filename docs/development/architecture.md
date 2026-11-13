@@ -2,7 +2,7 @@
 title: "Architecture and API"
 weight: 2
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T20:16:44+01:00
+lastmod: 2026-11-13T20:22:48+01:00
 ---
 
 > **Status:** proposed. Changes to this page go through an issue labelled
@@ -164,11 +164,16 @@ Runtime state (active mode per display) lives in
 ## Applying a mode
 
 1. Look up the mode and the display; fail early if either is missing.
-2. Read the current values the backend knows (cached since the last apply/read).
-3. **Diff:** keep only values that differ.
+2. Take the values the applier knows for the display. It only trusts values
+   it wrote (or read back) in the **last** apply on that display; codes that
+   mode didn't set are forgotten, because the monitor may change them by
+   itself (on the Acer SA243Y, a gain write switches `0x14` to User). After
+   resume or hotplug the daemon drops this cache entirely.
+3. **Diff:** keep only values that differ; unknown values count as changed.
 4. **Write the other codes** one by one through `DisplayBackend`, in this
    order:
-   1. colour preset (`0x14`) and vendor picture modes (e.g. `0xDC`);
+   1. colour preset (`0x14`) and picture mode (`0xDC`, MCCS "Display
+      Application");
    2. RGB gains (`0x16`, `0x18`, `0x1A`);
    3. contrast (`0x12`) and any remaining codes, ascending.
 

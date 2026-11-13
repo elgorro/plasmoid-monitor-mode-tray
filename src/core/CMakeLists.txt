@@ -4,7 +4,12 @@
 # libpmmt-core: mode model, config, diffing, apply logic.
 add_library(pmmt-core STATIC
     configerror.h
+    displaybackend.h
     mode.h
+    modeapplier.cpp
+    modeapplier.h
+    modediff.cpp
+    modediff.h
     modestore.cpp
     modestore.h
     vcp.cpp

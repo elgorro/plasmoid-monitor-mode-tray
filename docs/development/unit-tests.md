@@ -2,7 +2,7 @@
 title: "Unit tests"
 weight: 4
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T20:16:44+01:00
+lastmod: 2026-11-13T20:22:48+01:00
 ---
 
 Unit tests check one module at a time, with the hardware and KDE replaced by
@@ -67,13 +67,60 @@ covered by [smoke tests](../smoke-tests/), not unit tests. Keep their code thin.
 
 ## Fakes
 
-`FakeBackend` and `FakeBrightness` live in `src/backends/fake/` and are used by
-unit tests and smoke tests alike. They:
+`FakeBackend` and `FakeBrightness` live in `src/backends/fake/` (library
+`pmmt-fake`) and are used by unit tests and smoke tests alike. They:
 
-- hold VCP values per display in memory;
-- record every write in order, so tests can assert on order and count;
-- can fail a given VCP code (`failOn(0x16)`) or mark a display unreachable;
-- never sleep; delays are simulated through an injected clock.
+- hold VCP values per display in memory, loaded from a fixture
+  (`loadFixture()`) or set up in code (`addDisplay()`, `setFeature()`);
+- reject writes the monitor would reject: read-only codes, values above the
+  maximum or outside the allowed list, unsupported codes;
+- reproduce the monitor's side effects from the fixture, so a wrong write
+  order shows up as a wrong final value;
+- record every successful write in order (`writes()`) and count reads
+  (`readCount()`), so tests can assert on order and bus traffic;
+- can fail a given VCP code (`failOn(0x16)`) or mark a display unreachable
+  (`setReachable()`);
+- never sleep: `setDelayMs()` only advances a simulated clock
+  (`elapsedMs()`).
+
+`FakeBrightness` records each `setBrightness()` call and, like PowerDevil,
+writes `0x10` to the `FakeBackend` it was given. `setResult()` makes it
+report `NoMatch` or `Failed` instead.
+
+### Monitor fixtures
+
+`tests/fixtures/monitors/*.toml`, one monitor per file, TOML v1.0.0. Unknown
+keys are errors.
+
+```toml
+version = 1
+
+[display]                 # the ID is "MFG:MODEL:SERIAL"
+manufacturer = "ACR"      # required
+model = "SA243Y G0"       # required; also the label
+serial = "FAKE0001"
+connector = "DP-8"
+product_code = 0x0E1C     # informational
+mccs_version = "2.2"      # informational
+
+[vcp.0x10]                # continuous feature
+value = 75
+max = 100
+
+[vcp.0x14]                # non-continuous feature
+value = 0x06
+allowed = [0x05, 0x06, 0x08, 0x0B]
+names = { 0x05 = "Warm" } # informational
+writable = true           # default; false makes writes fail
+
+[[effects]]               # writing on_write (with value, if given) ...
+on_write = 0xE8
+value = 2
+sets = { 0x10 = 75 }      # ... makes the monitor set these codes
+```
+
+`acer-sa243y.toml` is the reference; its effects come from the real monitor
+(see [Acer SA243Y over DDC/CI](../acer-sa243y/)).
 
 ## Running
 
