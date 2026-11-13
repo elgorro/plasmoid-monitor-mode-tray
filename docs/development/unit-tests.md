@@ -2,7 +2,7 @@
 title: "Unit tests"
 weight: 4
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T00:00:00+01:00
+lastmod: 2026-11-13T12:00:00+01:00
 ---
 
 Unit tests check one module at a time, with the hardware and KDE replaced by
@@ -37,6 +37,11 @@ tests/unit/test_<module>.cpp     one executable per module
 tests/fixtures/config/*.toml     config inputs (valid and invalid)
 tests/fixtures/monitors/*.toml   fake monitor definitions
 ```
+
+`tests/unit/test_version.cpp` is the smallest working example.
+
+ECM's `KDECMakeSettings` also registers an `appstreamtest` in CTest. It passes
+trivially until the AppStream metainfo file exists.
 
 Test class: `Test<Module>`; test functions describe the behaviour,
 e.g. `applySkipsUnchangedValues()`. Use `_data()` functions for table-driven

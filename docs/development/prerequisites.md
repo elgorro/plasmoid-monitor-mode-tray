@@ -2,7 +2,7 @@
 title: "Prerequisites"
 weight: 1
 date: 2026-11-13T00:00:00+01:00
-lastmod: 2026-11-13T00:00:00+01:00
+lastmod: 2026-11-13T12:00:00+01:00
 ---
 
 ## Target platform
@@ -95,6 +95,20 @@ cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```
+
+`CMakeLists.txt` uses ECM (`KDEInstallDirs`, `KDECMakeSettings`,
+`KDECompilerSettings`) and builds as C++20. Build output goes to `build/bin/`
+and `build/lib/`.
+
+Format the C++ sources with ECM's KDE clang-format style before committing:
+
+```sh
+cmake --build build --target clang-format
+```
+
+Configuring copies ECM's `.clang-format` into the source directory. It is
+generated, so it is in `.gitignore` and not committed (as the ECM
+`KDEClangFormat` docs recommend).
 
 Install into a separate prefix, so you don't touch the system:
 
