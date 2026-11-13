@@ -1,6 +1,6 @@
 # Fake monitor definition: Acer SA243Y G0 (MCCS 2.2, RealTek controller).
 #
-# Recorded on real hardware for issue #12 with ddcutil 3.0.2, see
+# Recorded on real hardware for issues #12 and #38 with ddcutil 3.0.2, see
 # docs/development/acer-sa243y.md. The format is provisional; FakeBackend
 # (#14) defines the final schema.
 #
@@ -51,6 +51,10 @@ value = 0x11
 allowed = [0x01, 0x11]
 writable = false
 
+[vcp.0xAE] # Vertical frequency (current refresh rate), read only
+value = 12010 # 120.10 Hz; MCCS reports it in 0.01 Hz units
+writable = false
+
 [vcp.0x87] # Sharpness
 value = 2
 max = 4
@@ -60,9 +64,23 @@ value = 0x01
 allowed = [0x01, 0x02, 0x04, 0x05]
 writable = false
 
+[vcp.0xE0] # vendor: OSD/overlay state (5 hides the refresh-rate counter); avoid
+value = 0x00
+allowed = [0x00, 0x04, 0x05]
+writable = false
+
+[vcp.0xE1] # vendor: OSD lock, 1 = locked; never write
+value = 0x00
+allowed = [0x00, 0x01]
+writable = false
+
 [vcp.0xE2] # vendor: undocumented preset, sets brightness/contrast; avoid
 value = 0x00
 allowed = [0x00, 0x01, 0x02, 0x03, 0x04]
+
+[vcp.0xE5] # vendor: Black Boost, 0..10 (OSD changes show up here)
+value = 0
+max = 10
 
 [vcp.0xE8] # vendor: Low Blue Light level, 0 = Standard (off), 1..4 = level
 value = 0x00
@@ -101,6 +119,12 @@ sets = { 0x10 = 80, 0x14 = 0x05 }
 [[effects]]
 on_write = 0x10
 sets = { 0xE8 = 0x00 }
+
+# Any contrast write, even of the current value, resets LBL to Standard too.
+# The OSD keeps Picture mode "LBL", but 0x14 then reads 0x05.
+[[effects]]
+on_write = 0x12
+sets = { 0xE8 = 0x00, 0x14 = 0x05 }
 
 # Writing an RGB gain switches the colour preset to User.
 [[effects]]
